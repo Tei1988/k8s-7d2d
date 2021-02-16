@@ -4,7 +4,7 @@ Kubernetes manifests for deploying 7 Days to Die.
 
 # How to deploy
 
-Before deploying, replace <ExternalIP> to your L3 LB IP in `k8s/services/tcp.yaml.examble` and `k8s/services/udp.yaml.example` please.
+Before deploying, replace <ExternalIP> to your IP in `k8s/services/tcp.yaml.examble` and `k8s/services/udp.yaml.example` please.
 
 ```
 cd k8s
