@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seven-days-to-die
+  labels:
+    app: seven-days-to-die
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seven-days-to-die
+  template:
+    metadata:
+      labels:
+        app: seven-days-to-die
+    spec:
+      initContainers:
+        - name: download
+          image: steamcmd
+          command: ['sh', '-c']
+          env:
+            - name: DO_UPDATE
+              value: "1"
+          args:
+            - |-
+              if [ ! -f /7d2d/startserver.sh -o "x${DO_UPDATE}" = 'x1' ]; then
+                /root/steamcmd/steamcmd.sh +login anonymous +force_install_dir /7d2d +app_update 294420 validate +quit
+              fi
+          volumeMounts:
+            - name: seven-days-to-die-game
+              mountPath: /7d2d
+      containers:
+        - name: seven-days-to-die
+          image: alpine-glibc
+          workingDir: /7d2d
+          env:
+            - name: LD_LIBRARY_PATH
+              value: /7d2d
+          command: ['sh', '-e', '-c']
+          args:
+            - |-
+              if [ ! -f /7d2d/startserver.sh ]; then
+                exit 1
+              fi
+              cp /tmp/config/serverconfig.xml .
+              ./7DaysToDieServer.x86_64 -logfile /dev/stdout -quit -batchmode -nographics -dedicated -configfile=./serverconfig.xml
+              #tail -f /dev/null
+          volumeMounts:
+            - name: seven-days-to-die-game
+              mountPath: /7d2d
+            - name: seven-days-to-die-mods
+              mountPath: /7d2d/Mods
+            - name: seven-days-to-die-config
+              mountPath: /tmp/config
+            - name: seven-days-to-die-savedata
+              mountPath: /data/savegame
+            - name: seven-days-to-die-userdata
+              mountPath: /data/userdata
+          securityContext:
+            allowPrivilegeEscalation: false
+          imagePullPolicy: Always
+          ports:
+            - name: tcp
+              containerPort: 26900
+              protocol: TCP
+            - name: 26900-udp
+              containerPort: 26900
+              protocol: UDP
+            - name: 26901-udp
+              containerPort: 26901
+              protocol: UDP
+            - name: 26902-udp
+              containerPort: 26902
+              protocol: UDP
+          readinessProbe:
+            tcpSocket:
+              port: 26900
+            initialDelaySeconds: 300
+            periodSeconds: 60
+            timeoutSeconds: 30
+          livenessProbe:
+            tcpSocket:
+              port: 26900
+            initialDelaySeconds: 300
+            periodSeconds: 60
+            timeoutSeconds: 30
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 4500Mi
+            limits:
+              cpu: 1200m
+              memory: 5Gi
+      volumes:
+        - name: seven-days-to-die-game
+          persistentVolumeClaim:
+            claimName: seven-days-to-die-game
+        - name: seven-days-to-die-savedata
+          persistentVolumeClaim:
+            claimName: seven-days-to-die-savedata
+        - name: seven-days-to-die-userdata
+          persistentVolumeClaim:
+            claimName: seven-days-to-die-userdata
+        - name: seven-days-to-die-mods
+          persistentVolumeClaim:
+            claimName: seven-days-to-die-mods
+        - name: seven-days-to-die-config
+          configMap:
+            name: seven-days-to-die-config

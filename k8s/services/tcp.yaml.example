@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: seven-days-to-die-tcp
+  labels:
+    app: seven-days-to-die
+spec:
+  ports:
+    - name: tcp
+      port: 26900
+      targetPort: 26900
+      protocol: TCP
+  selector:
+    app: seven-days-to-die
+  loadBalancerIP: <ExternalIP>
+  type: LoadBalancer
+  #type: NodePort

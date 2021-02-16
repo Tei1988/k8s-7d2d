@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: seven-days-to-die-udp
+  labels:
+    app: seven-days-to-die
+spec:
+  ports:
+    - name: 26900-udp
+      port: 26900
+      targetPort: 26900
+      protocol: UDP
+    - name: 26901-udp
+      port: 26901
+      targetPort: 26901
+      protocol: UDP
+    - name: 26902-udp
+      port: 26902
+      targetPort: 26902
+      protocol: UDP
+  selector:
+    app: seven-days-to-die
+  loadBalancerIP: <ExternalIP>
+  type: LoadBalancer
+  #type: NodePort

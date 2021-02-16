@@ -1,0 +1,24 @@
+namespace: seven-days-to-die
+
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - persistent_volume_claims/game.yaml
+  - persistent_volume_claims/userdata.yaml
+  - persistent_volume_claims/savedata.yaml
+  - persistent_volume_claims/mods.yaml
+  - services/tcp.yaml
+  - services/udp.yaml
+
+configMapGenerator:
+  - name: seven-days-to-die-config
+    files:
+      - serverconfig.xml=config/serverconfig.xml
+
+images:
+  - name: steamcmd
+    newName: tei1988/steamcmd
+    newTag: 'latest'
+  - name: alpine-glibc
+    newName: frolvlad/alpine-glibc
+    newTag: 'alpine-3.12_glibc-2.32'
