@@ -3,7 +3,7 @@
 	<!-- GENERAL SERVER SETTINGS -->
 
 	<!-- Server representation -->
-	<property name="ServerName"						value="iicyan's gaming channel"/>		<!-- Whatever you want the name of the server to be. -->
+	<property name="ServerName"						value="My Game"/>		<!-- Whatever you want the name of the server to be. -->
 	<property name="ServerDescription"				value="A 7 Days to Die server"/>	<!-- Whatever you want the server description to be, will be shown in the server browser. -->
 	<property name="ServerWebsiteURL"				value=""/>					<!-- Website URL for the server, will be shown in the serverbrowser as a clickable link -->
 	<property name="ServerPassword"					value=""/>					<!-- Password to gain entry to the server -->
